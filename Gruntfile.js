@@ -30,7 +30,7 @@ module.exports = function(grunt) {
     			src: [ 'dist/css/**/*.css', '!dist/css/styles.css' ]
   			},
   			scripts: {
-    			src: [ 'dist/css/**/*.css', '!dist/css/styles.css' ]
+    			src: [ 'dist/js/**/*.js', '!dist/js/scripts.js' ]
   			},
 		},
 
@@ -61,7 +61,11 @@ module.exports = function(grunt) {
 		      		mangle: false
 		    	},
 	    		files: {
-		    		'dist/js/scripts.js': [ 'src/js/**/*.js' ]
+		    		'dist/js/scripts.js': [ 
+		    			'src/js/vendor/jquery/**/*.js', 	// Do JQUERY FIRST
+		    			'src/js/vendor/**/*.js', 			// Then do all the other vendor js files
+		    			'src/js/app/**/*.js' 				// Then add all of the app js file
+		    			]
 		    	}
 		  	}
 		},
@@ -78,8 +82,8 @@ module.exports = function(grunt) {
 			copy: {
 				files: [ 
 					'src/**', 
-					'!src/less/**/*.less', 
-					'src/js/**/*.js'
+					'!src/less/**/*.less', 	// Don't copy LESS Files 
+					'!src/js/**/*.js'		// Don't copy JS Files 
 					],
 				tasks: [ 'copy' ]
 			}, 
@@ -97,7 +101,8 @@ module.exports = function(grunt) {
 		      // Ex: 'localhost:9000' would serve up 'client/index.html'
 		      port: 9000,
 		      base:'dist', 
-		      open: true,	      
+		      open: true, 
+		      livereload: true      
 		    }
 		  }
 		}
@@ -106,7 +111,8 @@ module.exports = function(grunt) {
 
 	// Task to deal with stylesheets 
   	grunt.registerTask('scripts', [
-  		'uglify'
+  		'uglify',
+  		'clean:scripts'
   		]);
 
   	// Task to deal with scripts 
@@ -119,7 +125,7 @@ module.exports = function(grunt) {
 
 	// Build Task 
   	grunt.registerTask('build', [
-  		'clean', 
+  		'clean:build', 
   		'copy', 
   		'stylesheets', 
   		'scripts'
